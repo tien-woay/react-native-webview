@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import { useState, useRef } from "react";
 import {
   StyleSheet,
@@ -91,7 +90,7 @@ export default function App() {
 
         {title && (
           <>
-            <Text style={styles.mt} >event: {JSON.parse(title).event} </Text>
+            <Text style={styles.mt}>event: {JSON.parse(title).event} </Text>
             <Text>message: {JSON.parse(title).payload.message} </Text>
           </>
         )}
