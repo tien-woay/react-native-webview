@@ -8,20 +8,28 @@
 </head>
 <body>
     
-    <button onclick="handleMessage('message 1')">send message to app 'message 1'</button>
+    <button onclick="handleNumber('number 1')">send message to app 'number 1'</button>
     <br>
-    <button onclick="handleMessage('message 2')">send message to app 'message 2'</button>
+    <button onclick="handleNumber('number 2')">send message to app 'number 2'</button>
     <br>
-    <button onclick="handleMessage('message 3')">send message to app 'message 3'</button>
+    <button onclick="handleText('hello from web view')">send message to app 'message - hello from web view'</button>
     <br>
-    <button onclick="handleMessage('message a b c d e f ')">send message to app 'message a b c d e f g'</button>
+    <button onclick="handleText('hello React Native')">send message to app 'message - hello React Native'</button>
+    <br>
+    <button onclick="share()">share url</button>
 
     <script src="./sdk.js"></script>
     <script>
-         function handleMessage (m) {
-            console.log(sdk);
-            sdk.emit('postTitle', {message: m});
+         function handleNumber (m) {
+            sdk.emit('postNumber', {message: m});
         };  
+        function handleText (t){
+            sdk.emit('postText', {message: t})
+        };
+
+        function share() {
+            sdk.emit('share', {message: 'https://www.youtube.com/'})
+        };
     </script>
 </body>
 </html>

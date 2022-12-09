@@ -8,15 +8,15 @@ import {
   Share,
   Platform,
   Text,
-  TextInput
+  TextInput,
 } from "react-native";
 
 import { WebView } from "react-native-webview";
 
 export default function App() {
-  const [title, setTitle] = useState("react native title");
+  const [title, setTitle] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const colorValue = useRef("")
+  const colorValue = useRef("");
   const webviewRef = useRef(null);
 
   const onShare = async () => {
@@ -40,72 +40,80 @@ export default function App() {
     }
   };
 
-  const getText = (text) =>{
-    colorValue.current = text
-  }
+  const getText = (text) => {
+    colorValue.current = text;
+  };
 
-  const openWebView = () => setIsOpen(e => !e);
+  const openWebView = () => setIsOpen((e) => !e);
 
   const emitSetColor = () => {
-    alert('RN:' + colorValue.current.toString());
+    alert("RN:" + colorValue.current.toString());
 
     webviewRef.current.postMessage(
       JSON.stringify({
-        event: 'set-color',
+        event: "set-color",
         payload: {
-          color: colorValue.current.toString()
-        }
+          color: colorValue.current.toString(),
+        },
       })
     );
-  }
+  };
 
   const handleWebviewMessage = async (input) => {
     const obj = JSON.parse(input.nativeEvent.data);
-    const {event, payload} = obj;
+    const { event, payload } = obj;
     switch (event) {
-      case 'share':
+      case "share":
+        setTitle((e) => (e = JSON.stringify(obj)));
         await Share.share({
           title: "Share URL",
-          message: "Link Youtube: " + payload.url,
-          url: payload.url
+          message: "Link Youtube: " + payload.message,
+          url: payload.message,
         });
-      case 'postTitle': setTitle(e => e = payload.message);
+      case "postText":
+      case "postNumber":
+        setTitle((e) => (e = JSON.stringify(obj)));
 
-      break;
+        break;
     }
   };
-
   return (
     <>
-    <SafeAreaView>
-      {/* <View style={styles.container}>
+      <SafeAreaView>
+        {/* <View style={styles.container}>
         <Button onPress={onShare} title="Share" />
       </View>
       <View style={styles.mt}>
         <Text>{title}</Text>
         <Button marginTop={styles.mt} onPress={openWebView} title="Open Webview" />
       </View> */}
-      <Text> {title} </Text>
-    </SafeAreaView>
+        <Text> {title ? title : "react native title"} </Text>
 
-    {/* <TextInput onChangeText={getText} style={{backgroundColor: 'yellow'}} selectionColor='red'></TextInput>
+        {title && (
+          <>
+            <Text style={styles.mt} >event: {JSON.parse(title).event} </Text>
+            <Text>message: {JSON.parse(title).payload.message} </Text>
+          </>
+        )}
+      </SafeAreaView>
+      {/* <TextInput onChangeText={getText} style={{backgroundColor: 'yellow'}} selectionColor='red'></TextInput>
     <Button title="Set Color" onPress={emitSetColor}></Button>
     <Text style={styles.mt}>This is Web View </Text> */}
 
-    <View style={styles.viewViewSpace}>
-    <Text style={styles.mt}>Web View </Text>
-    </View>
-    <WebView
-      scalesPageToFit={false}
-      cacheEnabled={true}
-      mixedContentMode="compatibility"
-      ref={webviewRef}
-      onMessage={handleWebviewMessage}
-      source={{
-        url: "https://joyful-syrniki-d42e65.netlify.app/demo.html"
-      }}
-    />
-  </>
+      <View style={styles.viewViewSpace}>
+        <Text style={styles.mt}> Web View </Text>
+      </View>
+      <WebView
+        scalesPageToFit={false}
+        cacheEnabled={true}
+        mixedContentMode="compatibility"
+        ref={webviewRef}
+        onMessage={handleWebviewMessage}
+        source={{
+          url: "https://joyful-syrniki-d42e65.netlify.app/demo.html",
+        }}
+      />
+    </>
   );
 }
 
@@ -119,6 +127,6 @@ const styles = StyleSheet.create({
   viewViewSpace: {
     marginTop: 15,
     borderTopWidth: 1,
-    borderTopColor: 'black',
-  }
+    borderTopColor: "black",
+  },
 });
